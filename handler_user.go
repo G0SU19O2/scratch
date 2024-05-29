@@ -2,11 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/G0SU19O2/rssagg/internal/auth"
 	"github.com/G0SU19O2/rssagg/internal/database"
 	"github.com/google/uuid"
 )
@@ -35,16 +33,6 @@ func (apiConfig *apiConfig) userHandler(w http.ResponseWriter, r *http.Request) 
 	respondWithJSON(w, http.StatusCreated, databaseUserToUser(user))
 }
 
-func (apiConfig *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
-	apiKey, err := auth.GetAPIKey(r.Header)
-	if err != nil {
-		respondWithError(w, http.StatusForbidden, fmt.Sprintf("Invalid API key: %s", err))
-		return
-	}
-	user, err := apiConfig.db.GetUserByAPIKey(r.Context(), apiKey)
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("User not found: %s", err))
-		return
-	}
+func (apiConfig *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
 	respondWithJSON(w, http.StatusOK, databaseUserToUser(user))
 }
