@@ -10,7 +10,7 @@ import (
 )
 
 func (apiConfig *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request, user database.User) {
-	
+
 	type parameters struct {
 		Name string `json:"name"`
 		Url  string `json:"url"`
@@ -35,4 +35,13 @@ func (apiConfig *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Req
 		return
 	}
 	respondWithJSON(w, http.StatusCreated, databaseFeedToFeed(feed))
+}
+
+func (apiConfig *apiConfig) handlerGetFeeds(w http.ResponseWriter, r *http.Request) {
+	feeds, err := apiConfig.db.GetFeeds(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, databaseFeedsToFeeds(feeds))
 }

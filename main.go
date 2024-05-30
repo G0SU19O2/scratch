@@ -14,9 +14,11 @@ import (
 
 	_ "github.com/lib/pq"
 )
+
 type apiConfig struct {
 	db *database.Queries
 }
+
 func main() {
 	godotenv.Load()
 
@@ -44,11 +46,19 @@ func main() {
 	}))
 
 	v1Router := chi.NewRouter()
+
 	v1Router.Get("/health", readinessHandler)
 	v1Router.Get("/err", handleError)
+
 	v1Router.Get("/users", apiConfig.middlewareAuth(apiConfig.handlerGetUser))
 	v1Router.Post("/users", apiConfig.userHandler)
+
 	v1Router.Post("/feeds", apiConfig.middlewareAuth(apiConfig.handlerCreateFeed))
+	v1Router.Get("/feeds", apiConfig.handlerGetFeeds)
+
+	v1Router.Post("/feed_follows", apiConfig.middlewareAuth(apiConfig.handlerCreateFeedFollow))
+	v1Router.Get("/feed_follows", apiConfig.middlewareAuth(apiConfig.handlerGetFeedFollows))
+	v1Router.Delete("/feed_follows/{feedFollowID}", apiConfig.middlewareAuth(apiConfig.handlerDeleteFeedFollow))
 	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{
