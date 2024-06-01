@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/G0SU19O2/rssagg/internal/database"
 	"github.com/joho/godotenv"
@@ -28,9 +29,12 @@ func main() {
 		log.Fatal("failed to connect database: ", err)
 	}
 
+	db := database.New(conn)
 	apiConfig := apiConfig{
-		db: database.New(conn),
+		db: db,
 	}
+
+	go startScraping(db, 10, 1 * time.Minute)
 
 	port := os.Getenv("PORT")
 	router := chi.NewRouter()
@@ -59,6 +63,8 @@ func main() {
 	v1Router.Post("/feed_follows", apiConfig.middlewareAuth(apiConfig.handlerCreateFeedFollow))
 	v1Router.Get("/feed_follows", apiConfig.middlewareAuth(apiConfig.handlerGetFeedFollows))
 	v1Router.Delete("/feed_follows/{feedFollowID}", apiConfig.middlewareAuth(apiConfig.handlerDeleteFeedFollow))
+
+	v1Router.Get("/posts", apiConfig.middlewareAuth(apiConfig.handlerGetPostsForUser))
 	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{
