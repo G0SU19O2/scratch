@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/G0SU19O2/rssagg/internal/database"
+	"github.com/G0SU19O2/scratch/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -48,7 +48,6 @@ func databaseUserToUser(dbUser database.User) User {
 		Name:     dbUser.Name,
 	}
 }
-
 
 func databaseFeedToFeed(dbFeed database.Feed) Feed {
 	return Feed{

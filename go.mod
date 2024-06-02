@@ -1,4 +1,4 @@
-module github.com/G0SU19O2/rssagg
+module github.com/G0SU19O2/scratch
 
 go 1.22.3
 

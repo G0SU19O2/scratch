@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/G0SU19O2/rssagg/internal/database"
+	"github.com/G0SU19O2/scratch/internal/database"
 	"github.com/joho/godotenv"
 
 	"github.com/go-chi/chi"
@@ -34,7 +34,7 @@ func main() {
 		db: db,
 	}
 
-	go startScraping(db, 10, 1 * time.Minute)
+	go startScraping(db, 10, 10*time.Minute)
 
 	port := os.Getenv("PORT")
 	router := chi.NewRouter()

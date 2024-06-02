@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/G0SU19O2/rssagg/internal/database"
+	"github.com/G0SU19O2/scratch/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
@@ -54,7 +54,7 @@ func (apiConfig *apiConfig) handlerDeleteFeedFollow(w http.ResponseWriter, r *ht
 		return
 	}
 	err = apiConfig.db.DeleteFeedFollow(r.Context(), database.DeleteFeedFollowParams{
-		ID:   feedFollowID,
+		ID:     feedFollowID,
 		UserID: user.ID,
 	})
 	if err != nil {

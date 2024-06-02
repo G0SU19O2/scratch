@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/G0SU19O2/rssagg/internal/database"
+	"github.com/G0SU19O2/scratch/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -28,20 +28,20 @@ func startScraping(db *database.Queries, concurrency int, timeBetweenRequest tim
 		wg.Wait()
 	}
 }
-func scapeFeed(db *database.Queries,wg *sync.WaitGroup, feed database.Feed) {
+func scapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	defer wg.Done()
-	_, err := db.MarkFeedAsFetched(context.Background(), feed.ID) 
+	_, err := db.MarkFeedAsFetched(context.Background(), feed.ID)
 	if err != nil {
 		log.Printf("Error marking feed %s as fetched: %s", feed.ID, err)
 		return
 	}
-	rssFeed, err := urlToFeed(feed.Url) 
+	rssFeed, err := urlToFeed(feed.Url)
 	if err != nil {
 		log.Printf("Error getting feed %s: %s", feed.ID, err)
 		return
 	}
 	log.Printf("Got feed %s", rssFeed.Channel.Title)
-	
+
 	for _, item := range rssFeed.Channel.Item {
 		pubAt, err := time.Parse(time.RFC1123Z, item.PubDate)
 		if err != nil {
